@@ -1,0 +1,26 @@
+<head>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" sizes="128x128" href="icon.png">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+  <title>sensorhub</title>
+</head>
+
+<body>
+  {{> sensor }}
+</body>
+
+<template name="sensor">
+	<div class="sensor" style="color: {{ data._color }};">
+	  <h1>{{ data._sensorId }}</h1>
+	  <span class="value">{{ data.temperature }}°</span>
+	  <br/>
+	  <span class="value">{{ data.humidity }}%</span>
+	  <!-- <br>
+	  <span class="">{{ data._timestamp }}</span>
+	  <br/>
+	  <span class="">{{ data._currentTime }}</span> -->
+	  <br/>
+	  <span class="subtle">last update: {{ data._timeDiffSeconds }}s ago</span>
+	</div>
+</template>
