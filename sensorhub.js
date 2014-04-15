@@ -4,7 +4,6 @@ if (Meteor.isClient) {
   });
 
   var _prevTimestamp = 0;
-  var _prevTime = 0;
   var _currentTime = 0;
   var _currentTimeDep = new Deps.Dependency;
 
@@ -20,22 +19,20 @@ if (Meteor.isClient) {
   };
 
 
-  (function animloop(){
-    requestAnimFrame(animloop);
+  setInterval(function() {
     setCurrentTime(+new Date);
-  })();
+  }, 300);
 
   Template.sensor.data = function () {
     var data = Sensors.findOne({  _sensorId: 'woonkamer' }) || {};
     data['_currentTime'] = getCurrentTime();
 
     if (data._timestamp != _prevTimestamp ) {
-      _prevTime = +new Date;
       _prevTimestamp = data._timestamp
     }
-    var timeDiff = new Date - _prevTime;
+    var timeDiff = new Date - _prevTimestamp;
     data['_timeDiff'] = timeDiff;
-    data['_timeDiffSeconds'] = Math.floor(timeDiff / 1000);
+    data['timeAgo'] = timeDiff < 20000 ? Math.round(timeDiff/1000) + "s ago" : moment(Math.min(_prevTimestamp, +new Date)).fromNow(); // prevent negative numbers b/c that would be weird. They're the result of having differing clocks on Pi and Meteor
     var color = mapTo(timeDiff, 0, 60000, 0, 255); //Math.max(255 * (timeDiff / 60000));
     var alpha = 1 - mapTo(timeDiff, 0, 60000, 0, 0.5);
     data['_color'] = "rgba(" +Math.round(color)+ ",0,0, "+alpha+")";
