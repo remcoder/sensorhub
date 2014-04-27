@@ -1,6 +1,7 @@
 if (Meteor.isClient) {
   Meteor.startup(function() {
     Meteor.subscribe('Sensors');
+    Meteor.subscribe('Measurements');
   });
 
   var _prevTimestamp = 0;
@@ -38,6 +39,44 @@ if (Meteor.isClient) {
     data['_color'] = "rgba(" +Math.round(color)+ ",0,0, "+alpha+")";
     return data;
   };
+
+  Template.history.rendered = function() {
+    var canvas = this.findAll('canvas')[0];
+    var ctx = canvas.getContext('2d');
+    // console.log('rendered', canvas);
+
+    Deps.autorun(function() {
+      var filtered = Measurements
+      .find({ temperature : { $ne : null} })
+      .fetch()
+      .slice(0,30);
+        
+      var data = {
+        labels : filtered.map(function(f,i) { return i; }),
+        datasets : [{
+          fillColor : "rgba(220,220,220,0.5)",
+          strokeColor : "rgba(220,220,220,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#fff",
+          data : filtered.map(function(f) { return f.temperature; }),
+        }]
+      };  
+      
+      console.time('chart');
+      var myNewChart = new Chart(ctx).Bar(data, { 
+        animation: false,
+        scaleOverride: true,
+        scaleSteps: 10,
+        scaleStepWidth: 1,
+        scaleStartValue: 15
+      });
+      console.timeEnd('chart');
+
+      //console.log(filtered);
+    })
+    
+    
+  }
 }
 
 function mapTo (v, s0,s1, t0,t1) {
@@ -52,7 +91,11 @@ if (Meteor.isServer) {
 
     Meteor.publish('Sensors', function() {
       return Sensors.find({});
-    })
+    });
+
+    Meteor.publish('Measurements', function() {
+      return Measurements.find({});
+    });
   });
 
   Meteor.methods({

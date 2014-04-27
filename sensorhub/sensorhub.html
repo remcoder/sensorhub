@@ -8,6 +8,7 @@
 
 <body>
   {{> sensor }}
+  {{> history }}
 </body>
 
 <template name="sensor">
@@ -22,5 +23,11 @@
 	  <span class="">{{ data._currentTime }}</span> -->
 	  <br/>
 	  <span class="subtle">last update: {{ data.timeAgo }}</span>
+	</div>
+</template>
+
+<template name="history">
+	<div class="history">
+		<canvas width=1200></canvas>
 	</div>
 </template>
