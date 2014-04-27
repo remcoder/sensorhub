@@ -55,11 +55,7 @@ void setup(void)
   
   // open pipe for writing
   radio.openWritingPipe(0xF0F0F0F0E1LL);
- 
-  //radio.enableDynamicPayloads();
-  
-  radio.powerUp();
-  
+  radio.powerUp();  
   radio.printDetails();
   
   Serial << "\n" << "Startup took " << millis() << "ms" << endl;
@@ -82,7 +78,7 @@ void measure() {
   Serial << temp << "C" << endl;
   Serial << "measuring humidity: ";
   digitalWrite(3, HIGH);
-  unsigned long hum = round(dht.readHumidity()*100.0);
+  int hum = round(dht.readHumidity()*100.0);
   Serial << hum << "%" << endl;
   
   digitalWrite(3, HIGH);
