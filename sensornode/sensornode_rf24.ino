@@ -66,27 +66,21 @@ void loop(void)
 {
    measure();
    
-   int d = random(5000, 15000);
+   int d = random(10000, 20000);
    Serial << "waiting " << d << "ms\n\n";
    delay(d); // randomize delay to ensure we don't get stuck in an enless streak of collisions
 }
 
 void measure() {
   Serial << "measuring temperature: ";
-  
   int temp = round(dht.readTemperature()*100.0);
   Serial << temp << "C" << endl;
+  
   Serial << "measuring humidity: ";
-  digitalWrite(3, HIGH);
   int hum = round(dht.readHumidity()*100.0);
   Serial << hum << "%" << endl;
   
-  digitalWrite(3, HIGH);
   sendPacket(temp, hum);
-  
-  digitalWrite(3, LOW);
-  delay(1000);
-
 }
 
 void sendPacket(int temp, int hum) {
@@ -97,7 +91,10 @@ void sendPacket(int temp, int hum) {
   packet[3] = (int16_t) temp;
   packet[4] = (int16_t) hum;
   
-  radio.write(&packet, PACKET_SIZE);  
+  digitalWrite(3, HIGH);
+  radio.write(&packet, PACKET_SIZE);
+  digitalWrite(3, LOW);
+  
   packet_count++;
 }
 
