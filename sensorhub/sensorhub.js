@@ -4,35 +4,34 @@ if (Meteor.isClient) {
     Meteor.subscribe('Measurements');
   });
 
-  var prev = 0;
-  var prevTimeStamp = 0;
+  var prev = null;
+  var prevTimeStamp = null;
   var timer = Chronos.createTimer({ granularity : "second" });
   timer.start();
 
   Template.sensor.data = function () {
-    console.log('sensor.data')
+    // console.log('sensor.data')
     var data = Sensors.findOne({  _sensorId: 'woonkamer' }) || {};
     var now = data['_currentTime'] = +timer.getTime();
     
-
     if (data._timestamp != prevTimeStamp ) {
       prevTimeStamp = data._timestamp;
-      var updated = true;
+      if (prev === null)
+        prev = prevTimeStamp;
+      else
+        var updated = true;
     }
     
-    var timeDiff = now - prev;
-    data['_timeDiff'] = timeDiff;
-    data['timeAgo'] = Math.round(timeDiff/1000) + "s ago" ;
+    var delta = now - prev;
+    data['_delta'] = delta;
+    data['timeAgo'] = delta < 20000 
+      ? Math.round(delta/1000) + "s ago" 
+      : moment(now - delta).fromNow();
 
-    // timeDiff < 20000 
-    //   ? Math.round(timeDiff/1000) + "s ago" 
-    //   : moment(prev).fromNow();
-
-    var color = mapTo(timeDiff, 0, 60000, 0, 255); //Math.max(255 * (timeDiff / 60000));
-    var alpha = 1 - mapTo(timeDiff, 0, 60000, 0, 0.5);
+    var color = mapTo(delta, 0, 60000, 0, 255); //Math.max(255 * (delta / 60000));
+    var alpha = 1 - mapTo(delta, 0, 60000, 0, 0.5);
     data['_color'] = "rgba(" +Math.round(color)+ ",0,0, "+alpha+")";
 
-    console.log(now, timeDiff);
     if (updated)
       prev = now;
     return data;
