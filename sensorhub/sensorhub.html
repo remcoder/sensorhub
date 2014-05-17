@@ -13,12 +13,14 @@
 
 <template name="sensor">
 	{{#with data }}
-		<div class="sensor" style="color: {{ _color }};">
-		  <h1>{{ _sensorId }}</h1>
-		  <div class="value">{{ temperature }}°</div>
-		  <div class="value">{{ humidity }}%</div>
-		  <div class="subtle">last update: {{ timeAgo }}</div>
-		</div>
+		{{# if _sensorId}}
+			<div class="sensor" style="color: {{ _color }};">
+			  <h1>{{ _sensorId }}</h1>
+			  <div class="value">{{ temperature }}°</div>
+			  <div class="value">{{ humidity }}%</div>
+			  <div class="subtle">last update: {{ timeAgo }}</div>
+			</div>
+		{{/if}}
 	{{/with}}
 </template>
 
