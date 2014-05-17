@@ -12,18 +12,14 @@
 </body>
 
 <template name="sensor">
-	<div class="sensor" style="color: {{ data._color }};">
-	  <h1>{{ data._sensorId }}</h1>
-	  <span class="value">{{ data.temperature }}°</span>
-	  <br/>
-	  <span class="value">{{ data.humidity }}%</span>
-	  <!-- <br>
-	  <span class="">{{ data._timestamp }}</span>
-	  <br/>
-	  <span class="">{{ data._currentTime }}</span> -->
-	  <br/>
-	  <span class="subtle">last update: {{ data.timeAgo }}</span>
-	</div>
+	{{#with data }}
+		<div class="sensor" style="color: {{ _color }};">
+		  <h1>{{ _sensorId }}</h1>
+		  <div class="value">{{ temperature }}°</div>
+		  <div class="value">{{ humidity }}%</div>
+		  <div class="subtle">last update: {{ timeAgo }}</div>
+		</div>
+	{{/with}}
 </template>
 
 <template name="history">
