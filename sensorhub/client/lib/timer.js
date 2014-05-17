@@ -20,7 +20,7 @@ function granularity(g) {
   if (typeof g == 'string') {
     var key = g
       .toLowerCase()
-      .replace(/s$/,''); // remove potential 's' at the end.
+      .replace(/s$/,''); // plural
 
     return lookup[key]
   }
@@ -32,8 +32,8 @@ function Timer(opts) {
   opts = opts || {};
   this.granularity = granularity(opts.granularity)
   this.interval = opts.interval || this.granularity / 20;
-  console.log('granularity', this.granularity);
-  console.log('interval', this.interval);
+  // console.log('granularity', this.granularity);
+  // console.log('interval', this.interval);
   this.currentTime = 0;
   this.dep = new Deps.Dependency;
 }
@@ -44,9 +44,7 @@ Timer.prototype.getTime = function() {
 }
 
 Timer.prototype.setTime = function(t) {
-  console.log('checking time')
   if (Math.round(this.currentTime/this.granularity) != Math.round(t / this.granularity)) {
-    console.log('setting time')
     this.currentTime = t;
     this.dep.changed();
   }

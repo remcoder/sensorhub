@@ -15,10 +15,9 @@ h1 {
 	width: 100%;
 	text-align:center;
 }
+
 .sensor .value {
-	display: inline;	
 	font-size: 72px;
-	xtransition: color 1s linear;
 }
 
 .subtle {
