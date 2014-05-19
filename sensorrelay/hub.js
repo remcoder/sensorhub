@@ -30,9 +30,9 @@ ddpclient.connect(function(error) {
 	  if (chunk !== null) {
 	  	//console.log('measurement received from sensor: ', chunk);
 	  	var data = parse(chunk);
-		ddpclient.call('measurement',['woonkamer', +new Date, data], function(err, result) {
-	  		console.log('measurement sent: ', data);
-  		})	    
+			ddpclient.call('measurement', [data], function(err, result) {
+		  		console.log('measurement sent: ', data);
+	  		})	    
 	  }
 	});
 
@@ -72,6 +72,7 @@ function parse(chunk) {
 
 		var parts1 = line.split(']');
 		var senderId = parts1[0].slice(1).trim();
+		if (/^\d+$/.test(senderId)) senderId = +senderId; // convert to number if numeric
 		var valuePart = parts1[1].trim();
 		var parts = valuePart.split('=');
 		var key = parts[0];

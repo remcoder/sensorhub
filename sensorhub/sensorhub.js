@@ -11,7 +11,7 @@ if (Meteor.isClient) {
 
   Template.sensor.data = function () {
     // console.log('sensor.data')
-    var data = Sensors.findOne({  _sensorId: 'woonkamer' }) || {};
+    var data = Sensors.findOne({  _sensorId: 1 }) || {};
     var now = data['_currentTime'] = +timer.getTime();
     
     if (data._timestamp != prevTimeStamp ) {
@@ -93,7 +93,9 @@ if (Meteor.isServer) {
   });
 
   Meteor.methods({
-    measurement : function(sensorId, timestamp, data) {
+    measurement : function(data) {
+      var sensorId =  data.id ;
+      var timestamp = new Date;
       console.log("measurement data received: [" + sensorId + "][" + timestamp + "]", data);
       
       Measurements.insert({
