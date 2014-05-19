@@ -1,0 +1,7 @@
+{
+	"predef" : ["Meteor", "Accounts", "Session", "Template", "Match", "Deps", "EJSON", "Email", "Package", "Npm", "Assets", 
+		"moment",
+		"Chronos", "Sensors", "Measurements"],
+	"devel": true
+
+}

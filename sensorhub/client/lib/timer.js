@@ -6,11 +6,11 @@ var SECOND  = 1000,
     WEEK    = 7  * DAY;
 
 var lookup = {
-      "second"  : SECOND,
-      "minute"  : MINUTE,
-      "hour"    : HOUR,
-      "day"     : DAY,
-      "week"    : WEEK
+      'second'  : SECOND,
+      'minute'  : MINUTE,
+      'hour'    : HOUR,
+      'day'     : DAY,
+      'week'    : WEEK
 };
 
 function granularity(g) {
@@ -22,7 +22,7 @@ function granularity(g) {
       .toLowerCase()
       .replace(/s$/,''); // plural
 
-    return lookup[key]
+    return lookup[key];
   }
   
   throw new Error('granularity should be either string or number');
@@ -30,40 +30,40 @@ function granularity(g) {
 
 function Timer(opts) {
   opts = opts || {};
-  this.granularity = granularity(opts.granularity)
+  this.granularity = granularity(opts.granularity);
   this.interval = opts.interval || this.granularity / 20;
   // console.log('granularity', this.granularity);
   // console.log('interval', this.interval);
   this.currentTime = 0;
-  this.dep = new Deps.Dependency;
+  this.dep = new Deps.Dependency();
 }
 
 Timer.prototype.getTime = function() {
   this.dep.depend();
   return this.currentTime;
-}
+};
 
 Timer.prototype.setTime = function(t) {
   if (Math.round(this.currentTime/this.granularity) != Math.round(t / this.granularity)) {
     this.currentTime = t;
     this.dep.changed();
   }
-}
+};
 
 Timer.prototype.start = function() {
-  this.currentTime = new Date;
+  this.currentTime = new Date();
   this.timer = setInterval(function() {
-    this.setTime(new Date);
+    this.setTime(new Date());
   }.bind(this), this.interval);
-}
+};
 
 Timer.prototype.stop = function() {
   clearInterval(this.timer);
-}
+};
 
 // export as global
 Chronos = {
   createTimer : function (opts) {
     return new Timer(opts);
   }
-}
+};

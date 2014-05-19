@@ -6,41 +6,41 @@ if (Meteor.isClient) {
 
   var prev = null;
   var prevTimeStamp = null;
-  var timer = Chronos.createTimer({ granularity : "second" });
+  var timer = Chronos.createTimer({ granularity : 'second' });
   timer.start();
 
+
   Template.sensor.data = function () {
-    // console.log('sensor.data')
     var data = Sensors.findOne({  _sensorId: 1 }) || {};
-    var now = data['_currentTime'] = +timer.getTime();
-    
-    if (data._timestamp != prevTimeStamp ) {
+    var now = data.currentTime = +timer.getTime();
+    var delta = 0;
+
+    if (data._timestamp && +data._timestamp != +prevTimeStamp ) {
+      
       prevTimeStamp = data._timestamp;
-      if (prev === null)
+      // console.log('updating', 'prevTimeStamp',prevTimeStamp, 'new timestamp' ,data._timestamp);
+      if (prev === null) {
         prev = prevTimeStamp;
-      else
-        var updated = true;
-    }
+      } else {
+        prev = now;
+      }
+    } else if (prev) {
+      delta = now - prev;
+      // console.log('update delta', delta);
+    }  
     
-    var delta = now - prev;
-    data['_delta'] = delta;
-    data['timeAgo'] = delta < 20000 
-      ? Math.round(delta/1000) + "s ago" 
-      : moment(now - delta).fromNow();
+    data._delta = delta;
+    data._color = delta > 60000 ? 'rgba(255,0,0,0.2)' : '#black';
+    
+    if (delta < 60000) 
+      data.timeAgo = 'less than a minute ago';
+    else
+      data.timeAgo = moment(now - delta).fromNow();
 
-    var color = mapTo(delta, 0, 60000, 0, 255); //Math.max(255 * (delta / 60000));
-    var alpha = 1 - mapTo(delta, 0, 60000, 0, 0.5);
-    data['_color'] = "rgba(" +Math.round(color)+ ",0,0, "+alpha+")";
-
-    if (updated)
-      prev = now;
     return data;
   };
 
-  function mapTo (v, s0,s1, t0,t1) {
-    var v_new = t1 * (v / s1);
-    return Math.max(t0, Math.min(t1, v_new));
-  }
+  
 
   // Template.history.rendered = function() {
   //   var canvas = this.findAll('canvas')[0];
@@ -87,8 +87,8 @@ if (Meteor.isServer) {
   Meteor.methods({
     measurement : function(data) {
       var sensorId =  data.id ;
-      var timestamp = new Date;
-      console.log("measurement data received: [" + sensorId + "][" + timestamp + "]", data);
+      var timestamp = new Date();
+      console.log('measurement data received: [' + sensorId + '][' + timestamp + ']', data);
       
       Measurements.insert({
         _sensorId   : sensorId,
@@ -113,7 +113,7 @@ if (Meteor.isServer) {
           }
         });
     }
-  })
+  });
 }
-Sensors = new Meteor.Collection("sensors");
-Measurements = new Meteor.Collection("measurements");
+Sensors = new Meteor.Collection('sensors');
+Measurements = new Meteor.Collection('measurements');
