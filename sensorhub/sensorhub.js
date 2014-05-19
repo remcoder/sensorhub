@@ -97,10 +97,10 @@ if (Meteor.isServer) {
       console.log("measurement data received: [" + sensorId + "][" + timestamp + "]", data);
       
       Measurements.insert({
-        _sensorId : sensorId,
-        _timestamp : timestamp,
+        _sensorId   : sensorId,
+        _timestamp  : timestamp,
         temperature : data.temperature,
-        humidity : data.humidity
+        humidity    : data.humidity
       });
 
       if (data.temperature)
