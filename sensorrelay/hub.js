@@ -27,18 +27,16 @@ ddpclient.connect(function(error) {
 
 	process.stdin.on('readable', function(chunk) {
 	  var chunk = process.stdin.read();
-	  if (chunk !== null) {
+	  if (chunk) {
 	  	//console.log('measurement received from sensor: ', chunk);
 	  	var data = parse(chunk);
+
+	  	if (data && data.id !== undefined)
 			ddpclient.call('measurement', [data], function(err, result) {
 		  		console.log('measurement sent: ', data);
 	  		})	    
 	  }
 	});
-
-
-
-  
 });
 
 /*
@@ -70,6 +68,7 @@ function parse(chunk) {
 		if (line.indexOf(']') == -1)
 			return;
 
+		console.log(line);
 		var parts1 = line.split(']');
 		var senderId = parts1[0].slice(1).trim();
 		if (/^\d+$/.test(senderId)) senderId = +senderId; // convert to number if numeric
