@@ -6,7 +6,6 @@ var ddpclient = new DDPClient({
   port: 80,
   //host: "192.168.178.21", 
   //port: 3000,
-  /* optional: */
   auto_reconnect: true,
   auto_reconnect_timer: 500,
   use_ejson: true,  // default is false
@@ -64,9 +63,7 @@ function parse(chunk) {
 	var lines = chunk.split('\n');
 	lines.forEach(function (line) {
 		if (!line) return;
-
-		if (line.indexOf(']') == -1)
-			return;
+		if (line.indexOf(']') == -1) return;
 
 		console.log(line);
 		var parts1 = line.split(']');

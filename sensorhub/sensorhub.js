@@ -37,6 +37,11 @@ if (Meteor.isClient) {
     return data;
   };
 
+  function mapTo (v, s0,s1, t0,t1) {
+    var v_new = t1 * (v / s1);
+    return Math.max(t0, Math.min(t1, v_new));
+  }
+
   // Template.history.rendered = function() {
   //   var canvas = this.findAll('canvas')[0];
   //   var ctx = canvas.getContext('2d');
@@ -73,23 +78,10 @@ if (Meteor.isClient) {
   // }
 }
 
-function mapTo (v, s0,s1, t0,t1) {
-  var v_new = t1 * (v / s1)
-  return Math.max(t0, Math.min(t1, v_new));
-}
-
 if (Meteor.isServer) {
   Meteor.startup(function() {
-    // Measurements.remove({});
-    // Sensors.remove({});
-
-    Meteor.publish('Sensors', function() {
-      return Sensors.find({});
-    });
-
-    Meteor.publish('Measurements', function() {
-      return Measurements.find({});
-    });
+    Meteor.publish('Sensors',      function() { return Sensors.find({}); });
+    Meteor.publish('Measurements', function() { return Measurements.find({}); });
   });
 
   Meteor.methods({
