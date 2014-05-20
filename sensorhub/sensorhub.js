@@ -10,34 +10,37 @@ if (Meteor.isClient) {
   timer.start();
 
 
-  Template.sensor.data = function () {
-    var data = Sensors.findOne({  _sensorId: 1 }) || {};
-    var now = data.currentTime = +timer.getTime();
-    var delta = 0;
+  Template.sensors.data = function () {
+    
+    return Sensors.find().map(function(s,index) {
+      var now = s.currentTime = +timer.getTime();
+      var delta = 0;
 
-    if (data._timestamp && +data._timestamp != +prevTimeStamp ) {
+      if (s._timestamp && +s._timestamp != +prevTimeStamp ) {
+        
+        prevTimeStamp = s._timestamp;
+        // console.log('updating', 'prevTimeStamp',prevTimeStamp, 'new timestamp' ,s._timestamp);
+        if (prev === null) {
+          prev = prevTimeStamp;
+        } else {
+          prev = now;
+        }
+      } else if (prev) {
+        delta = now - prev;
+        // console.log('update delta', delta);
+      }  
       
-      prevTimeStamp = data._timestamp;
-      // console.log('updating', 'prevTimeStamp',prevTimeStamp, 'new timestamp' ,data._timestamp);
-      if (prev === null) {
-        prev = prevTimeStamp;
-      } else {
-        prev = now;
-      }
-    } else if (prev) {
-      delta = now - prev;
-      // console.log('update delta', delta);
-    }  
-    
-    data._delta = delta;
-    data._color = delta > 60000 ? 'rgba(255,0,0,0.2)' : '#black';
-    
-    if (delta < 60000) 
-      data.timeAgo = 'less than a minute ago';
-    else
-      data.timeAgo = moment(now - delta).fromNow();
+      s._delta = delta;
+      s._color = delta > 60000 ? 'rgba(255,0,0,0.2)' : '#black';
+      
+      if (delta < 60000) 
+        s.timeAgo = 'less than a minute ago';
+      else
+        s.timeAgo = moment().subtract('ms', delta).fromNow();
+      s._index = index;
+      return s;
 
-    return data;
+    });
   };
 
   

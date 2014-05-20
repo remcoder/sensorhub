@@ -1,6 +1,7 @@
 /* CSS declarations go here */
 html, body {
 	width: 100%;
+	margin: 0;
 }
 
 body {
@@ -11,9 +12,22 @@ h1 {
 	color: #ddd;
 }
 
+.sensor-list {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	xoverflow: hidden;
+
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
 .sensor {
 	width: 100%;
 	text-align:center;
+	position: absolute;
 }
 
 .sensor .value {

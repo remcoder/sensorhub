@@ -7,21 +7,23 @@
 </head>
 
 <body>
-  {{> sensor }}
+  {{> sensors }}
   {{> history }}
 </body>
 
-<template name="sensor">
-	{{#with data }}
+<template name="sensors">
+	<div class="sensor-list">
+	{{#each data}}
 		{{# if _sensorId}}
-			<div class="sensor" style="color: {{ _color }};">
-			  <h1>{{ _sensorId }}</h1>
-			  <div class="value">{{ temperature }}°</div>
-			  <div class="value">{{ humidity }}%</div>
-			  <div class="subtle">last update {{ timeAgo }}</div>
+			<div class="sensor" style="color: {{ _color }}; left: {{ _index }}00%;">
+				<h1>#{{ _sensorId }}</h1>
+				<div class="value">{{ temperature }}°</div>
+				<div class="value">{{ humidity }}%</div>
+				<div class="subtle">last update {{ timeAgo }}</div>
 			</div>
 		{{/if}}
-	{{/with}}
+	{{/each}}
+	</div>
 </template>
 
 <template name="history">
